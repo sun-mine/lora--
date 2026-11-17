@@ -2,6 +2,7 @@
 /bin/
 /lib/
 /lib64/
+/lib64
 /include/
 /share/
 /pyvenv.cfg
@@ -16,6 +17,9 @@
 # 压缩包
 *.tar.gz
 *.zip
+
+# 展示页源码目录（仓库根目录已有同内容站点）
+/lora-showcase/
 
 # 缓存与编辑器
 __pycache__/
