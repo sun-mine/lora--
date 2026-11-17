@@ -1,0 +1,24 @@
+# Python 虚拟环境
+/bin/
+/lib/
+/lib64/
+/include/
+/share/
+/pyvenv.cfg
+/pip.conf
+
+# 模型权重与训练产物
+/model/
+/output/
+*.safetensors
+*.bin
+
+# 压缩包
+*.tar.gz
+*.zip
+
+# 缓存与编辑器
+__pycache__/
+*.pyc
+.vscode/
+.ipynb_checkpoints/

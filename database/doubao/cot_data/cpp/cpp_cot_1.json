@@ -1,0 +1,252 @@
+[
+  {
+    "instruction": "编写一个C++程序，输出\"Hello, World!\"到控制台。",
+    "input": "",
+    "output": "让我一步步思考如何解决这个问题：\n\n1. 首先，我需要明确这是一个最基础的C++入门程序，主要考察对C++程序基本结构的理解。\n\n2. C++程序必须有一个main函数作为入口点，这是程序开始执行的地方。\n\n3. 要进行控制台输出，我需要使用iostream头文件中的cout对象，所以首先要包含<iostream>头文件。\n\n4. cout对象位于std命名空间中，对于简单程序可以使用using namespace std;语句简化代码。\n\n5. 输出字符串需要用双引号括起来，cout后面跟<<运算符来输出内容。\n\n6. 输出结束后加上endl来换行并刷新缓冲区。\n\n7. main函数返回0表示程序正常结束。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Hello, World!\" << endl;\n    return 0;\n}\n```\n\n这个程序结构清晰，是标准的C++入门程序，应该可以正确运行。"
+  },
+  {
+    "instruction": "编写一个C++程序，从用户输入两个整数，计算并输出它们的和、差、积、商（整数除法）和余数。",
+    "input": "",
+    "output": "我来一步步分析这个问题：\n\n1. 首先，题目要求处理用户输入的两个整数，需要进行加减乘除和取余运算。\n\n2. 需要包含<iostream>头文件来进行输入输出操作。\n\n3. 定义两个整型变量a和b来存储用户输入的两个数。\n\n4. 使用cin来读取用户输入。\n\n5. 加法用+、减法用-、乘法用*，除法用/（整数除法会截断小数部分），取余用%。\n\n6. 需要考虑除数为0的情况，这时候除法和取余会出错，应该做判断。\n\n7. 输出时要清晰标注每个结果。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cout << \"请输入两个整数：\";\n    cin >> a >> b;\n    \n    cout << \"和：\" << a + b << endl;\n    cout << \"差：\" << a - b << endl;\n    cout << \"积：\" << a * b << endl;\n    \n    if (b != 0) {\n        cout << \"商：\" << a / b << endl;\n        cout << \"余数：\" << a % b << endl;\n    } else {\n        cout << \"除数不能为0！\" << endl;\n    }\n    \n    return 0;\n}\n```\n\n加入了除数为0的判断，程序更健壮。"
+  },
+  {
+    "instruction": "编写一个C++程序，判断一个输入的整数是奇数还是偶数，并输出结果。",
+    "input": "",
+    "output": "让我思考一下如何判断奇偶数：\n\n1. 奇偶数定义：能被2整除的是偶数，不能被2整除的是奇数。\n\n2. 在C++中可以用取余运算符%，如果n % 2 == 0就是偶数，否则是奇数。\n\n3. 这个逻辑对负数也成立，因为-4%2也是0，-3%2是-1不等于0。\n\n4. 也可以用位运算n&1判断，因为偶数二进制最后一位是0，但取余更直观。\n\n5. 需要包含iostream，读取整数，用if-else判断输出。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"请输入一个整数：\";\n    cin >> n;\n    \n    if (n % 2 == 0) {\n        cout << n << \" 是偶数\" << endl;\n    } else {\n        cout << n << \" 是奇数\" << endl;\n    }\n    \n    return 0;\n}\n```\n\n测试用例：输入4是偶数，7是奇数，0是偶数，-3是奇数，都正确。"
+  },
+  {
+    "instruction": "编写一个C++程序，输出1到100之间所有的素数（质数）。",
+    "input": "",
+    "output": "好的，我来思考如何找出1到100之间的所有素数：\n\n1. 素数定义：大于1的自然数，除了1和它本身之外没有其他正因数。1不是素数，2是最小的素数。\n\n2. 最直接的方法：对于每个数n从2到100，检查它是否能被2到√n之间的数整除（因为因数一定成对出现，一个小于等于√n，一个大于等于√n）。\n\n3. 用j*j <= i来判断，避免浮点数运算。\n\n4. 用bool变量标记是否是素数。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"1到100之间的素数：\" << endl;\n    \n    for (int i = 2; i <= 100; i++) {\n        bool is_prime = true;\n        for (int j = 2; j * j <= i; j++) {\n            if (i % j == 0) {\n                is_prime = false;\n                break;\n            }\n        }\n        if (is_prime) cout << i << \" \";\n    }\n    cout << endl;\n    return 0;\n}\n```\n\n优化了只检查到√n，效率更高，结果正确。"
+  },
+  {
+    "instruction": "编写一个C++程序，使用循环输出九九乘法表。",
+    "input": "",
+    "output": "让我想想怎么打印九九乘法表：\n\n1. 九九乘法表是三角形格式，第i行（i从1到9）有i个式子，j从1到i，输出j*i=乘积。\n\n2. 需要两层循环：外层i从1到9控制行数，内层j从1到i控制每行式子数。\n\n3. 用\\t制表符对齐，每行星完换行。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    for (int i = 1; i <= 9; i++) {\n        for (int j = 1; j <= i; j++) {\n            cout << j << \"*\" << i << \"=\" << i*j << \"\\t\";\n        }\n        cout << endl;\n    }\n    return 0;\n}\n```\n\n标准下三角格式，输出整齐。"
+  },
+  {
+    "instruction": "编写一个C++程序，计算斐波那契数列的前n项，n由用户输入。斐波那契数列前两项是0和1，后面每一项是前两项之和。",
+    "input": "",
+    "output": "让我思考如何计算斐波那契数列：\n\n1. 斐波那契数列F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2)。\n\n2. 用迭代方法，两个变量a=0, b=1，效率高无重复计算；递归效率低有大量重复计算，不推荐。\n\n3. 用long long类型防止溢出，可以计算更多项。\n\n4. 处理n<=0的输入错误情况。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"请输入项数n：\";\n    cin >> n;\n    if (n <= 0) { cout << \"请输入正整数！\" << endl; return 1; }\n    \n    long long a = 0, b = 1;\n    if (n >= 1) cout << a << \" \";\n    if (n >= 2) cout << b << \" \";\n    for (int i = 3; i <= n; i++) {\n        long long c = a + b;\n        cout << c << \" \";\n        a = b; b = c;\n    }\n    cout << endl;\n    return 0;\n}\n```\n\n迭代方法时间O(n)空间O(1)，高效正确。"
+  },
+  {
+    "instruction": "编写一个C++函数，实现两个整数的交换，要求不使用第三个临时变量。然后在main函数中测试。",
+    "input": "",
+    "output": "好的，不用临时变量交换两个数：\n\n1. 方法一：加减法a=a+b; b=a-b; a=a-b;但可能溢出。\n\n2. 方法二：异或运算，利用x^x=0, x^0=x, x^y^x=y的性质，不会溢出。\n\n3. 注意必须用引用参数，否则函数内交换的是副本，不影响实参。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nvoid mySwap(int& a, int& b) {\n    a = a ^ b;\n    b = a ^ b;\n    a = a ^ b;\n}\n\nint main() {\n    int x = 10, y = 20;\n    cout << \"交换前：x=\" << x << \", y=\" << y << endl;\n    mySwap(x, y);\n    cout << \"交换后：x=\" << x << \", y=\" << y << endl;\n    return 0;\n}\n```\n\n异或方法安全无溢出，引用参数确保修改原变量，正确。"
+  },
+  {
+    "instruction": "编写一个C++程序，输入一个字符串，统计其中英文字母、空格、数字和其他字符的个数。",
+    "input": "",
+    "output": "让我思考如何统计各类字符：\n\n1. 需要读取整行输入（包含空格），用getline(cin, str)。\n\n2. 四个计数器初始化为0。\n\n3. 遍历每个字符，用isalpha判断字母，c==' '判断空格，isdigit判断数字，否则其他。\n\n4. 需要包含<string>和<cctype>头文件。\n\n```cpp\n#include <iostream>\n#include <string>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    string str;\n    cout << \"请输入字符串：\";\n    getline(cin, str);\n    int letters=0, spaces=0, digits=0, others=0;\n    for (char c : str) {\n        if (isalpha(c)) letters++;\n        else if (c == ' ') spaces++;\n        else if (isdigit(c)) digits++;\n        else others++;\n    }\n    cout << \"字母：\" << letters << endl;\n    cout << \"空格：\" << spaces << endl;\n    cout << \"数字：\" << digits << endl;\n    cout << \"其他：\" << others << endl;\n    return 0;\n}\n```\n\n范围for循环简洁，正确统计各类字符。"
+  },
+  {
+    "instruction": "编写一个C++程序，实现简单计算器，支持加减乘除，用户输入两个数和运算符，输出结果。",
+    "input": "",
+    "output": "好的，简单计算器：\n\n1. 用double类型支持小数运算。\n\n2. 用switch语句判断运算符更清晰。\n\n3. 除法判断除数不为0。\n\n4. 处理非法运算符输入。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    double num1, num2;\n    char op;\n    cout << \"请输入表达式（如 3 + 5）：\";\n    cin >> num1 >> op >> num2;\n    switch(op) {\n        case '+': cout << num1+num2 << endl; break;\n        case '-': cout << num1-num2 << endl; break;\n        case '*': cout << num1*num2 << endl; break;\n        case '/':\n            if (num2 != 0) cout << num1/num2 << endl;\n            else cout << \"除数不能为0！\" << endl;\n            break;\n        default: cout << \"不支持的运算符！\" << endl;\n    }\n    return 0;\n}\n```\n\n每个case都有break防止穿透，除法做了除零判断，正确。"
+  },
+  {
+    "instruction": "编写一个C++程序，使用选择排序算法对整数数组进行升序排序。",
+    "input": "",
+    "output": "选择排序原理：每趟从未排序部分选最小元素，放到已排序末尾。\n\n1. 外层循环i从0到n-2，共n-1趟。\n\n2. 内层循环找i到n-1中最小元素下标min_idx。\n\n3. 交换arr[i]和arr[min_idx]。\n\n4. 时间复杂度O(n²)，原地排序。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nvoid selectionSort(int arr[], int n) {\n    for (int i = 0; i < n-1; i++) {\n        int min_idx = i;\n        for (int j = i+1; j < n; j++) {\n            if (arr[j] < arr[min_idx]) min_idx = j;\n        }\n        int temp = arr[i];\n        arr[i] = arr[min_idx];\n        arr[min_idx] = temp;\n    }\n}\n\nvoid printArray(int arr[], int n) {\n    for (int i = 0; i < n; i++) cout << arr[i] << \" \";\n    cout << endl;\n}\n\nint main() {\n    int arr[] = {64,25,12,22,11};\n    int n = sizeof(arr)/sizeof(arr[0]);\n    cout << \"排序前：\"; printArray(arr, n);\n    selectionSort(arr, n);\n    cout << \"排序后：\"; printArray(arr, n);\n    return 0;\n}\n```\n\n手动模拟排序正确，每趟选最小交换，结果正确。"
+  },
+  {
+    "instruction": "编写C++类Rectangle，包含私有width、height，公有setWidth、setHeight、getArea、getPerimeter，main中测试。",
+    "input": "",
+    "output": "面向对象基础题，矩形类：\n\n1. 私有成员width、height为double类型支持小数。\n\n2. 公有成员函数设置宽高、计算面积=w*h、周长=2*(w+h)。\n\n3. 加默认构造函数初始化宽高为0，避免未初始化问题。\n\n4. getArea、getPerimeter声明为const成员函数，不修改对象。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nclass Rectangle {\nprivate:\n    double width, height;\npublic:\n    Rectangle() : width(0), height(0) {}\n    void setWidth(double w) { width = w; }\n    void setHeight(double h) { height = h; }\n    double getArea() const { return width * height; }\n    double getPerimeter() const { return 2*(width+height); }\n};\n\nint main() {\n    Rectangle r;\n    r.setWidth(5); r.setHeight(3);\n    cout << \"面积：\" << r.getArea() << endl;\n    cout << \"周长：\" << r.getPerimeter() << endl;\n    return 0;\n}\n```\n\n构造函数初始化列表高效，const成员函数规范，结果正确。"
+  },
+  {
+    "instruction": "编写C++程序实现字符串反转，不使用标准库reverse函数，自己实现。",
+    "input": "",
+    "output": "字符串反转：\n\n1. 双指针法：left指向开头，right指向结尾，交换对应字符，向中间移动直到相遇。\n\n2. 原地反转空间O(1)，效率高。\n\n3. 参数用string&引用，否则修改副本不影响原串。\n\n4. 用getline读取支持空格。\n\n```cpp\n#include <iostream>\n#include <string>\nusing namespace std;\n\nvoid reverseStr(string& s) {\n    int left = 0, right = s.size()-1;\n    while (left < right) {\n        char temp = s[left];\n        s[left] = s[right];\n        s[right] = temp;\n        left++; right--;\n    }\n}\n\nint main() {\n    string s;\n    cout << \"请输入字符串：\";\n    getline(cin, s);\n    reverseStr(s);\n    cout << \"反转后：\" << s << endl;\n    return 0;\n}\n```\n\n测试\"hello\"反转成\"olleh\"正确，空串、单字符、偶长度都正确。"
+  },
+  {
+    "instruction": "编写C++程序，用递归计算n的阶乘n!，0!=1，n!=n*(n-1)!。",
+    "input": "",
+    "output": "递归计算阶乘：\n\n1. 递归出口：n==0返回1。\n\n2. 递推式：return n * fact(n-1)。\n\n3. 用long long防止溢出，可计算到20!。\n\n4. 输入负数提示错误。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nlong long fact(int n) {\n    if (n == 0) return 1;\n    return n * fact(n-1);\n}\n\nint main() {\n    int n;\n    cout << \"请输入非负整数n：\";\n    cin >> n;\n    if (n < 0) { cout << \"请输入非负整数！\" << endl; return 1; }\n    cout << n << \"! = \" << fact(n) << endl;\n    return 0;\n}\n```\n\n递归逻辑正确，n=0返回1，n=5返回120，正确。"
+  },
+  {
+    "instruction": "编写C++程序找出整型数组中的最大值和最小值。",
+    "input": "",
+    "output": "找数组最大最小值：\n\n1. 遍历数组一次，同时维护max和min，时间O(n)最优。\n\n2. 初始max和min设为第一个元素，避免全负数问题。\n\n3. 用引用参数返回两个结果。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nvoid findMaxMin(int arr[], int n, int& maxv, int& minv) {\n    maxv = minv = arr[0];\n    for (int i = 1; i < n; i++) {\n        if (arr[i] > maxv) maxv = arr[i];\n        if (arr[i] < minv) minv = arr[i];\n    }\n}\n\nint main() {\n    int arr[] = {12,45,-7,23,56,0,-3,89};\n    int n = sizeof(arr)/sizeof(arr[0]);\n    int maxv, minv;\n    findMaxMin(arr, n, maxv, minv);\n    cout << \"最大值：\" << maxv << \" 最小值：\" << minv << endl;\n    return 0;\n}\n```\n\n一次遍历同时找最大最小，效率高，结果正确。"
+  },
+  {
+    "instruction": "编写C++程序判断字符串是否是回文字符串（正读反读相同）。",
+    "input": "",
+    "output": "回文字符串判断：\n\n1. 双指针法：left头right尾，比较对应字符，全相等则是回文。\n\n2. 有一对不等就返回false。\n\n3. 参数const string&安全高效。\n\n```cpp\n#include <iostream>\n#include <string>\nusing namespace std;\n\nbool isPalindrome(const string& s) {\n    int left = 0, right = s.size()-1;\n    while (left < right) {\n        if (s[left] != s[right]) return false;\n        left++; right--;\n    }\n    return true;\n}\n\nint main() {\n    string s;\n    cout << \"请输入字符串：\";\n    getline(cin, s);\n    if (isPalindrome(s)) cout << s << \" 是回文\" << endl;\n    else cout << s << \" 不是回文\" << endl;\n    return 0;\n}\n```\n\n测试\"level\"返回true，\"hello\"返回false，正确。"
+  },
+  {
+    "instruction": "编写C++程序实现冒泡排序对整数数组升序排序。",
+    "input": "",
+    "output": "冒泡排序：\n\n1. 相邻元素比较，逆序则交换，每趟最大元素\"浮\"到末尾。\n\n2. 加swapped标志，某趟无交换说明已有序，提前终止，最好情况O(n)。\n\n3. 每趟后末尾i个元素有序，内层循环到n-1-i。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nvoid bubbleSort(int arr[], int n) {\n    for (int i = 0; i < n-1; i++) {\n        bool swapped = false;\n        for (int j = 0; j < n-1-i; j++) {\n            if (arr[j] > arr[j+1]) {\n                int temp = arr[j];\n                arr[j] = arr[j+1];\n                arr[j+1] = temp;\n                swapped = true;\n            }\n        }\n        if (!swapped) break;\n    }\n}\n\nvoid printArr(int arr[], int n) {\n    for (int i = 0; i < n; i++) cout << arr[i] << \" \";\n    cout << endl;\n}\n\nint main() {\n    int arr[] = {64,34,25,12,22,11,90};\n    int n = sizeof(arr)/sizeof(arr[0]);\n    bubbleSort(arr, n);\n    printArr(arr, n);\n    return 0;\n}\n```\n\n稳定排序，优化后最好情况O(n)，排序正确。"
+  },
+  {
+    "instruction": "编写C++程序实现二分查找，在有序数组中找目标值，返回下标，不存在返回-1。",
+    "input": "",
+    "output": "二分查找：\n\n1. 前提数组有序。\n\n2. 左闭右闭区间[left, right]，循环条件left<=right。\n\n3. mid = left + (right-left)/2避免溢出。\n\n4. arr[mid]==target找到，大于target去左半right=mid-1，小于去右半left=mid+1。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint binarySearch(int arr[], int n, int target) {\n    int left = 0, right = n-1;\n    while (left <= right) {\n        int mid = left + (right-left)/2;\n        if (arr[mid] == target) return mid;\n        else if (arr[mid] > target) right = mid - 1;\n        else left = mid + 1;\n    }\n    return -1;\n}\n\nint main() {\n    int arr[] = {11,12,22,25,34,64,90};\n    int n = sizeof(arr)/sizeof(arr[0]);\n    cout << binarySearch(arr, n, 22) << endl;\n    cout << binarySearch(arr, n, 50) << endl;\n    return 0;\n}\n```\n\n时间O(logn)效率高，边界处理正确，找首尾元素都正确。"
+  },
+  {
+    "instruction": "编写C++程序用指针遍历整型数组并输出所有元素，不能用数组下标。",
+    "input": "",
+    "output": "指针遍历数组：\n\n1. 数组名是首元素地址，int* p=arr指向第一个元素。\n\n2. 指针加1自动指向下个元素，根据类型调整步长。\n\n3. 数组名是常量指针不能修改，必须定义指针变量移动。\n\n4. 用*p解引用访问元素。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int arr[] = {10,20,30,40,50};\n    int n = sizeof(arr)/sizeof(arr[0]);\n    int* p = arr;\n    cout << \"指针遍历：\";\n    for (int i = 0; i < n; i++) {\n        cout << *(p+i) << \" \";\n    }\n    cout << endl;\n    cout << \"移动指针：\";\n    p = arr;\n    for (int i = 0; i < n; i++) {\n        cout << *p << \" \";\n        p++;\n    }\n    cout << endl;\n    return 0;\n}\n```\n\n两种指针遍历方式都正确，数组名不能++这点很重要。"
+  },
+  {
+    "instruction": "编写C++程序动态分配int数组，大小用户输入，输入元素计算平均值。",
+    "input": "",
+    "output": "动态内存分配：\n\n1. new int[n]动态分配数组，大小运行时确定。\n\n2. 用完必须delete[] arr释放，new[]对应delete[]防止泄漏。\n\n3. 计算平均值转成double避免整数除法。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"输入数组大小：\";\n    cin >> n;\n    if (n <= 0) { cout << \"大小必须正整数！\" << endl; return 1; }\n    int* arr = new int[n];\n    cout << \"输入\" << n << \"个整数：\";\n    for (int i = 0; i < n; i++) cin >> arr[i];\n    int sum = 0;\n    for (int i = 0; i < n; i++) sum += arr[i];\n    double avg = static_cast<double>(sum)/n;\n    cout << \"平均值：\" << avg << endl;\n    delete[] arr;\n    return 0;\n}\n```\n\nnew/delete配对使用，数组delete加[]，类型转换正确得到小数结果。"
+  },
+  {
+    "instruction": "编写C++类Student，私有name、age、score，公有set/get方法和display输出信息。",
+    "input": "",
+    "output": "学生类设计：\n\n1. 私有成员封装，string name, int age, double score。\n\n2. set方法加验证（年龄0-120，分数0-100）。\n\n3. get方法和display加const，不修改对象。\n\n4. 默认构造和带参构造，初始化列表高效。\n\n```cpp\n#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Student {\nprivate:\n    string name;\n    int age;\n    double score;\npublic:\n    Student() : age(0), score(0) {}\n    Student(string n, int a, double s) : name(n), age(a), score(s) {}\n    void setName(string n) { name = n; }\n    string getName() const { return name; }\n    void setAge(int a) { if(a>=0&&a<=120) age=a; }\n    int getAge() const { return age; }\n    void setScore(double s) { if(s>=0&&s<=100) score=s; }\n    double getScore() const { return score; }\n    void display() const {\n        cout << \"姓名：\" << name << \" 年龄：\" << age << \" 分数：\" << score << endl;\n    }\n};\n\nint main() {\n    Student s(\"张三\",20,95.5);\n    s.display();\n    return 0;\n}\n```\n\n封装良好，数据验证保证合法性，const成员函数规范。"
+  },
+  {
+    "instruction": "编写C++继承：基类Shape有getArea()返回0，派生Rectangle和Circle重写getArea计算各自面积。",
+    "input": "",
+    "output": "继承多态题：\n\n1. 基类Shape定义虚函数getArea，虚析构函数。\n\n2. 公有继承，Rectangle和Circle是Shape的一种。\n\n3. 派生类重写getArea加override，编译器检查重写正确性。\n\n4. 基类指针指向派生类对象实现多态调用。\n\n```cpp\n#include <iostream>\nusing namespace std;\nconst double PI = 3.14159;\n\nclass Shape {\npublic:\n    virtual double getArea() const { return 0; }\n    virtual ~Shape() {}\n};\n\nclass Rectangle : public Shape {\n    double w, h;\npublic:\n    Rectangle(double a, double b) : w(a), h(b) {}\n    double getArea() const override { return w*h; }\n};\n\nclass Circle : public Shape {\n    double r;\npublic:\n    Circle(double a) : r(a) {}\n    double getArea() const override { return PI*r*r; }\n};\n\nint main() {\n    Shape* arr[] = {new Rectangle(5,3), new Circle(4)};\n    for(int i=0;i<2;i++) cout << arr[i]->getArea() << endl;\n    for(int i=0;i<2;i++) delete arr[i];\n    return 0;\n}\n```\n\n虚函数实现多态，虚析构保证正确释放，override关键字安全，结果正确。"
+  },
+  {
+    "instruction": "编写C++程序将十进制正整数转换为二进制输出。",
+    "input": "",
+    "output": "十进制转二进制：\n\n1. 除2取余法：不断除以2，记录余数，直到商为0，余数逆序就是二进制。\n\n2. 余数先得到低位，后得到高位，每次把新余数插在字符串前面就不用反转。\n\n3. 单独处理n=0的情况。\n\n```cpp\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"输入正整数：\";\n    cin >> n;\n    if(n < 0) { cout << \"请输入正整数！\" << endl; return 1; }\n    if(n == 0) { cout << 0 << endl; return 0; }\n    string bin;\n    while(n > 0) {\n        bin = (char)('0' + n%2) + bin;\n        n /= 2;\n    }\n    cout << \"二进制：\" << bin << endl;\n    return 0;\n}\n```\n\n测试6转110正确，8转1000正确，0直接输出0，正确。"
+  },
+  {
+    "instruction": "编写C++程序统计英文文章中每个单词出现次数，不区分大小写。",
+    "input": "",
+    "output": "单词计数：\n\n1. 逐个字符读入，字母转小写加入当前单词，非字母时单词结束加入map。\n\n2. map<string,int>自动按字典序排序，也可用unordered_map更快。\n\n3. 最后处理末尾未结束的单词。\n\n```cpp\n#include <iostream>\n#include <string>\n#include <map>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    map<string,int> cnt;\n    string cur; char c;\n    cout << \"输入文本（Ctrl+Z结束）：\" << endl;\n    while(cin.get(c)) {\n        if(isalpha(c)) cur += tolower(c);\n        else { if(!cur.empty()) { cnt[cur]++; cur.clear(); } }\n    }\n    if(!cur.empty()) cnt[cur]++;\n    for(auto& p : cnt) cout << p.first << \": \" << p.second << endl;\n    return 0;\n}\n```\n\n正确分隔单词，不区分大小写，map有序输出，正确。"
+  },
+  {
+    "instruction": "编写C++程序用数组实现简单栈，支持push、pop、peek、isEmpty，大小固定100。",
+    "input": "",
+    "output": "数组实现栈：\n\n1. 栈后进先出LIFO，top初始-1表示空。\n\n2. push：top++后存元素，先检查是否满top>=99。\n\n3. pop：返回arr[top--]，先检查是否空top<0。\n\n4. peek返回栈顶不弹出，isEmpty判断top<0。\n\n```cpp\n#include <iostream>\nusing namespace std;\nconst int MAX = 100;\n\nclass Stack {\n    int arr[MAX];\n    int top;\npublic:\n    Stack() : top(-1) {}\n    bool push(int x) {\n        if(top >= MAX-1) { cout << \"栈满！\" << endl; return false; }\n        arr[++top] = x; return true;\n    }\n    int pop() {\n        if(top < 0) { cout << \"栈空！\" << endl; return -1; }\n        return arr[top--];\n    }\n    int peek() const {\n        if(top < 0) { cout << \"栈空！\" << endl; return -1; }\n        return arr[top];\n    }\n    bool isEmpty() const { return top < 0; }\n};\n\nint main() {\n    Stack s;\n    s.push(10); s.push(20); s.push(30);\n    cout << s.pop() << endl;\n    cout << s.peek() << endl;\n    return 0;\n}\n```\n\n栈顶指针操作正确，边界判断完善，功能正确。"
+  },
+  {
+    "instruction": "编写C++程序，输入一行字符，用字符指针统计字母、空格、数字、其他字符个数，不能用数组下标。",
+    "input": "",
+    "output": "指针遍历C字符串：\n\n1. 用char数组存输入，cin.getline读取一行。\n\n2. char* p指向首字符，while(*p!='\\0')循环。\n\n3. 判断*p类型，计数器++，然后p++。\n\n4. 全程不用[]下标，只用*p和p++。\n\n```cpp\n#include <iostream>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    char str[1000];\n    cout << \"输入一行字符：\";\n    cin.getline(str, 1000);\n    int l=0,sp=0,d=0,o=0; char* p=str;\n    while(*p != '\\0') {\n        if(isalpha(*p)) l++;\n        else if(*p == ' ') sp++;\n        else if(isdigit(*p)) d++;\n        else o++;\n        p++;\n    }\n    cout << \"字母：\" << l << \" 空格：\" << sp << \" 数字：\" << d << \" 其他：\" << o << endl;\n    return 0;\n}\n```\n\n纯指针操作无下标，正确统计各类字符，符合题目要求。"
+  },
+  {
+    "instruction": "编写C++函数实现strcpy功能：字符串拷贝，返回目标指针，不能用标准库strcpy。",
+    "input": "",
+    "output": "实现strcpy：\n\n1. 经典写法：while((*dest++=*src++)!='\\0'); 包含复制'\\0'。\n\n2. 先保存dest初始地址用于返回。\n\n3. dest要有足够空间，src必须以'\\0'结尾。\n\n4. src是const char*不修改源串。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nchar* myStrcpy(char* dest, const char* src) {\n    char* ret = dest;\n    while((*dest++ = *src++) != '\\0');\n    return ret;\n}\n\nint main() {\n    const char* s = \"Hello World\";\n    char d[50];\n    myStrcpy(d, s);\n    cout << d << endl;\n    return 0;\n}\n```\n\n经典实现，包含结束符复制，返回目标指针支持链式调用，正确。"
+  },
+  {
+    "instruction": "编写C++程序生成斐波那契前20项存入数组，每行5个输出。",
+    "input": "",
+    "output": "斐波那契存储输出：\n\n1. fib[0]=0,fib[1]=1，fib[i]=fib[i-1]+fib[i-2]。\n\n2. 遍历输出，i%5==0且i!=0时换行，每行5个。\n\n3. 用固定大小数组int fib[20]符合标准C++。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    const int n=20;\n    int fib[n];\n    fib[0]=0; fib[1]=1;\n    for(int i=2;i<n;i++) fib[i]=fib[i-1]+fib[i-2];\n    for(int i=0;i<n;i++) {\n        if(i!=0 && i%5==0) cout << endl;\n        cout << fib[i] << \"\\t\";\n    }\n    cout << endl;\n    return 0;\n}\n```\n\n前20项正确，每行5个格式整齐，fib[19]=4181正确。"
+  },
+  {
+    "instruction": "编写C++程序实现插入排序对整数数组升序排序。",
+    "input": "",
+    "output": "插入排序：\n\n1. 类似整理手牌，将元素插入已排序部分正确位置。\n\n2. 从i=1开始，key=arr[i]，j=i-1向前找位置，比key大的后移。\n\n3. 最后key放到j+1位置。\n\n4. 接近有序时效率高，稳定排序。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nvoid insertionSort(int arr[], int n) {\n    for(int i=1;i<n;i++) {\n        int key = arr[i], j = i-1;\n        while(j>=0 && arr[j]>key) {\n            arr[j+1] = arr[j];\n            j--;\n        }\n        arr[j+1] = key;\n    }\n}\n\nvoid print(int arr[], int n) {\n    for(int i=0;i<n;i++) cout << arr[i] << \" \";\n    cout << endl;\n}\n\nint main() {\n    int arr[] = {12,11,13,5,6};\n    int n = sizeof(arr)/sizeof(arr[0]);\n    insertionSort(arr, n);\n    print(arr, n);\n    return 0;\n}\n```\n\n手动模拟排序正确，接近有序时O(n)，稳定，正确。"
+  },
+  {
+    "instruction": "编写C++程序输入3个整数，按从小到大顺序输出。",
+    "input": "",
+    "output": "三个数排序：\n\n1. 三次比较交换：先ab比较，小的放a；再ac比较，小的放a（a最小）；再bc比较，小的放b。\n\n2. 最终a<=b<=c，逻辑简单清晰。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int a,b,c,t;\n    cout << \"输入三个整数：\";\n    cin >> a >> b >> c;\n    if(a>b) {t=a;a=b;b=t;}\n    if(a>c) {t=a;a=c;c=t;}\n    if(b>c) {t=b;b=c;c=t;}\n    cout << \"排序后：\" << a << \" \" << b << \" \" << c << endl;\n    return 0;\n}\n```\n\n三次比较最多三次交换，测试所有排列都正确。"
+  },
+  {
+    "instruction": "编写C++程序求1!+2!+3!+...+10!的和。",
+    "input": "",
+    "output": "阶乘求和：\n\n1. 不用每次重新计算阶乘，递推计算：fact初始1，每次fact=fact*i，累加到sum。\n\n2. 这样时间O(n)，无重复计算。\n\n3. 用long long防止溢出，10!是3628800，和为4037913，用int也够但long long安全。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    long long sum = 0, fact = 1;\n    for(int i=1;i<=10;i++) {\n        fact *= i;\n        sum += fact;\n    }\n    cout << \"1!+2!+...+10! = \" << sum << endl;\n    return 0;\n}\n```\n\n递推计算高效，结果是4037913，正确。"
+  },
+  {
+    "instruction": "编写C++程序判断一个数是否为水仙花数：三位数，各位立方和等于自身，如153=1³+5³+3³。",
+    "input": "",
+    "output": "水仙花数判断：\n\n1. 水仙花数是三位数，范围100-999。\n\n2. 分解出百位a=n/100，十位b=n/10%10，个位c=n%10。\n\n3. 判断a*a*a + b*b*b + c*c*c == n。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"输入一个三位数：\";\n    cin >> n;\n    if(n<100||n>999) { cout << \"不是三位数！\" << endl; return 1; }\n    int a = n/100, b = n/10%10, c = n%10;\n    if(a*a*a + b*b*b + c*c*c == n)\n        cout << n << \" 是水仙花数\" << endl;\n    else\n        cout << n << \" 不是水仙花数\" << endl;\n    return 0;\n}\n```\n\n153、370、371、407都是水仙花数，测试正确。"
+  },
+  {
+    "instruction": "编写C++程序输出所有水仙花数（100-999之间）。",
+    "input": "",
+    "output": "输出所有水仙花数：\n\n1. 遍历100到999每个三位数。\n\n2. 分解百位十位个位，计算立方和，等于自身则输出。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"水仙花数：\";\n    for(int n=100;n<=999;n++) {\n        int a=n/100, b=n/10%10, c=n%10;\n        if(a*a*a+b*b*b+c*c*c == n)\n            cout << n << \" \";\n    }\n    cout << endl;\n    return 0;\n}\n```\n\n输出153 370 371 407，正确。"
+  },
+  {
+    "instruction": "编写C++程序实现求两个整数的最大公约数（GCD），用欧几里得算法（辗转相除法）。",
+    "input": "",
+    "output": "最大公约数：\n\n1. 欧几里得算法：gcd(a,b) = gcd(b, a%b)，直到b==0时a就是gcd。\n\n2. 迭代实现，不用递归，效率高。\n\n3. 处理负数输入，取绝对值。\n\n```cpp\n#include <iostream>\n#include <cstdlib>\nusing namespace std;\n\nint gcd(int a, int b) {\n    a = abs(a); b = abs(b);\n    while(b != 0) {\n        int temp = b;\n        b = a % b;\n        a = temp;\n    }\n    return a;\n}\n\nint main() {\n    int a, b;\n    cout << \"输入两个整数：\";\n    cin >> a >> b;\n    cout << \"最大公约数：\" << gcd(a,b) << endl;\n    return 0;\n}\n```\n\ngcd(12,18)=6，gcd(7,5)=1，正确。欧几里得算法效率很高。"
+  },
+  {
+    "instruction": "编写C++程序求两个整数最小公倍数（LCM），利用公式lcm(a,b)=a*b/gcd(a,b)。",
+    "input": "",
+    "output": "最小公倍数：\n\n1. 先写gcd函数，再用公式lcm=|a*b|/gcd。\n\n2. 注意a*b可能溢出，可以先除后乘：|a|/gcd*|b|防止溢出。\n\n```cpp\n#include <iostream>\n#include <cstdlib>\nusing namespace std;\n\nint gcd(int a, int b) {\n    a=abs(a); b=abs(b);\n    while(b) { int t=b; b=a%b; a=t; }\n    return a;\n}\n\nint lcm(int a, int b) {\n    return abs(a)/gcd(a,b)*abs(b);\n}\n\nint main() {\n    int a,b;\n    cin >> a >> b;\n    cout << \"LCM：\" << lcm(a,b) << endl;\n    return 0;\n}\n```\n\n先除后乘避免溢出，lcm(12,18)=36，正确。"
+  },
+  {
+    "instruction": "编写C++程序判断一个正整数是否为完全数（完美数）：等于除自身外所有正因子之和，如6=1+2+3。",
+    "input": "",
+    "output": "完全数判断：\n\n1. 找出1到n/2之间所有能整除n的因子，求和，和等于n则是完全数。\n\n2. 优化：因子成对出现，只需到sqrt(n)。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nbool isPerfect(int n) {\n    if(n <= 1) return false;\n    int sum = 1;\n    for(int i=2;i*i<=n;i++) {\n        if(n%i == 0) {\n            sum += i;\n            if(i != n/i) sum += n/i;\n        }\n    }\n    return sum == n;\n}\n\nint main() {\n    int n;\n    cin >> n;\n    if(isPerfect(n)) cout << n << \"是完全数\" << endl;\n    else cout << n << \"不是完全数\" << endl;\n    return 0;\n}\n```\n\n第一个完全数6、28、496等，测试正确，因子到sqrt(n)效率高。"
+  },
+  {
+    "instruction": "编写C++程序，输入一行英文句子，将每个单词首字母大写，其余小写输出。",
+    "input": "",
+    "output": "单词首字母大写：\n\n1. 遍历字符串，用一个标志标记新单词开始，初始为true表示第一个字母要大写。\n\n2. 遇到字母：如果是新单词，转大写；否则转小写，然后设新单词标志为false。\n\n3. 遇到非字母，设新单词标志为true，字符直接输出。\n\n```cpp\n#include <iostream>\n#include <string>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    string s;\n    cout << \"输入句子：\";\n    getline(cin, s);\n    bool newWord = true;\n    for(char& c : s) {\n        if(isalpha(c)) {\n            if(newWord) { c = toupper(c); newWord = false; }\n            else c = tolower(c);\n        } else {\n            newWord = true;\n        }\n    }\n    cout << s << endl;\n    return 0;\n}\n```\n\n\"hello world\"变成\"Hello World\"，正确处理多个空格。"
+  },
+  {
+    "instruction": "编写C++程序实现简单的链表节点结构，创建一个包含5个节点的链表并遍历输出。",
+    "input": "",
+    "output": "单链表实现：\n\n1. 定义结构体ListNode，int val和next指针。\n\n2. 依次new节点，连接起来，形成链表。\n\n3. 遍历链表输出每个节点值，最后释放所有节点内存。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode* next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nint main() {\n    ListNode* head = nullptr;\n    ListNode* tail = nullptr;\n    for(int i=1;i<=5;i++) {\n        ListNode* node = new ListNode(i*10);\n        if(!head) head = tail = node;\n        else { tail->next = node; tail = node; }\n    }\n    ListNode* p = head;\n    while(p) { cout << p->val << \" \"; p = p->next; }\n    cout << endl;\n    while(head) { ListNode* t=head; head=head->next; delete t; }\n    return 0;\n}\n```\n\n输出10 20 30 40 50，最后正确释放内存，无泄漏。"
+  },
+  {
+    "instruction": "编写C++函数实现字符串连接strcat功能，不能用标准库strcat。",
+    "input": "",
+    "output": "实现strcat：\n\n1. 先找到dest末尾'\\0'位置。\n\n2. 然后从这个位置开始复制src到dest，包括'\\0'。\n\n3. 返回dest初始指针。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nchar* myStrcat(char* dest, const char* src) {\n    char* ret = dest;\n    while(*dest) dest++;\n    while((*dest++ = *src++) != '\\0');\n    return ret;\n}\n\nint main() {\n    char s1[100] = \"Hello \";\n    const char* s2 = \"World\";\n    cout << myStrcat(s1, s2) << endl;\n    return 0;\n}\n```\n\n先找末尾再复制，结果\"Hello World\"，正确。dest必须有足够空间。"
+  },
+  {
+    "instruction": "编写C++程序实现求字符串长度strlen功能，不能用标准库strlen。",
+    "input": "",
+    "output": "实现strlen：\n\n1. 计数器初始0，指针从首字符开始，不是'\\0'就计数++，指针++。\n\n2. 或者指针相减：一个指针从头移动到末尾，减初始指针得长度。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint myStrlen(const char* s) {\n    int len = 0;\n    while(*s++ != '\\0') len++;\n    return len;\n}\n\nint main() {\n    const char* s = \"Hello\";\n    cout << myStrlen(s) << endl;\n    cout << myStrlen(\"\") << endl;\n    return 0;\n}\n```\n\n空串返回0，\"Hello\"返回5，正确。用指针遍历计数，简单高效。"
+  },
+  {
+    "instruction": "编写C++程序，用*号打印菱形图案，层数n由用户输入（n为奇数）。",
+    "input": "",
+    "output": "打印菱形：\n\n1. 菱形分上下两部分：上半n/2+1行，下半n/2行。\n\n2. 每行先打印空格，再打印*。第i行星数和*数找规律。\n\n3. 假设n=5，上3行下2行：\n   行0：2空格，1*\n   行1：1空格，3*\n   行2：0空格，5*\n   行3：1空格，3*\n   行4：2空格，1*\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"输入菱形行数（奇数）：\";\n    cin >> n;\n    int half = n/2;\n    for(int i=0;i<n;i++) {\n        int sp = abs(i-half);\n        for(int j=0;j<sp;j++) cout << \" \";\n        for(int j=0;j<n-2*sp;j++) cout << \"*\";\n        cout << endl;\n    }\n    return 0;\n}\n```\n\n用abs计算空格数，不用分两部分循环，更简洁，输出菱形正确。"
+  },
+  {
+    "instruction": "编写C++程序，输入一个字符串，删除其中所有空格后输出。",
+    "input": "",
+    "output": "删除字符串空格：\n\n1. 新建一个结果字符串，遍历原串。\n\n2. 遇到非空格字符就追加到结果，遇到空格跳过。\n\n```cpp\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cout << \"输入字符串：\";\n    getline(cin, s);\n    string res;\n    for(char c : s) {\n        if(c != ' ') res += c;\n    }\n    cout << res << endl;\n    return 0;\n}\n```\n\n也可以双指针原地修改，但新建字符串更简单清晰，正确删除所有空格。"
+  },
+  {
+    "instruction": "编写C++程序，用递归实现汉诺塔问题，输出n个盘子从A柱移到C柱的步骤。",
+    "input": "",
+    "output": "汉诺塔递归：\n\n1. 将n个盘子从A移到C，借助B：先把n-1个从A移到B，再把第n个从A移到C，最后n-1个从B移到C。\n\n2. 递归出口n==1时直接移动。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nvoid hanoi(int n, char from, char to, char aux) {\n    if(n == 1) {\n        cout << \"移动盘子1从 \" << from << \" 到 \" << to << endl;\n        return;\n    }\n    hanoi(n-1, from, aux, to);\n    cout << \"移动盘子\" << n << \"从 \" << from << \" 到 \" << to << endl;\n    hanoi(n-1, aux, to, from);\n}\n\nint main() {\n    int n;\n    cout << \"输入盘子数：\";\n    cin >> n;\n    hanoi(n, 'A', 'C', 'B');\n    return 0;\n}\n```\n\n经典递归问题，分解为子问题，步骤正确。"
+  },
+  {
+    "instruction": "编写C++程序，输入一个整数，输出它的所有质因数分解，如12=2*2*3。",
+    "input": "",
+    "output": "质因数分解：\n\n1. 从最小质数2开始除，能除尽就记录因数并继续除，除不尽试下一个数。\n\n2. 直到i*i大于n，如果剩下n>1则也是质因数。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << \"输入正整数：\";\n    cin >> n;\n    cout << n << \"=\";\n    bool first = true;\n    for(int i=2;i*i<=n;i++) {\n        while(n%i == 0) {\n            if(!first) cout << \"*\";\n            cout << i;\n            first = false;\n            n /= i;\n        }\n    }\n    if(n>1) {\n        if(!first) cout << \"*\";\n        cout << n;\n    }\n    cout << endl;\n    return 0;\n}\n```\n\n12输出2*2*3，正确处理first标志避免开头多余*号。"
+  },
+  {
+    "instruction": "编写C++程序实现简单队列，用数组实现，支持入队、出队、查看队首、判断空。",
+    "input": "",
+    "output": "数组实现循环队列：\n\n1. 用front和rear两个指针，空出一个位置区分满和空。\n\n2. front指向队首，rear指向队尾下一个位置。\n\n3. 空：front==rear；满：(rear+1)%MAX==front。\n\n```cpp\n#include <iostream>\nusing namespace std;\nconst int MAX = 100;\n\nclass Queue {\n    int arr[MAX];\n    int front, rear;\npublic:\n    Queue() : front(0), rear(0) {}\n    bool enqueue(int x) {\n        if((rear+1)%MAX == front) { cout << \"队满！\" << endl; return false; }\n        arr[rear] = x; rear = (rear+1)%MAX; return true;\n    }\n    int dequeue() {\n        if(front==rear) { cout << \"队空！\" << endl; return -1; }\n        int x = arr[front]; front = (front+1)%MAX; return x;\n    }\n    int getFront() const {\n        if(front==rear) { cout << \"队空！\" << endl; return -1; }\n        return arr[front];\n    }\n    bool isEmpty() const { return front == rear; }\n};\n\nint main() {\n    Queue q;\n    q.enqueue(1); q.enqueue(2); q.enqueue(3);\n    cout << q.dequeue() << endl;\n    cout << q.getFront() << endl;\n    return 0;\n}\n```\n\n先进先出FIFO，循环队列利用数组空间，正确。"
+  },
+  {
+    "instruction": "编写C++程序，交换两个变量的值，用指针作为函数参数实现。",
+    "input": "",
+    "output": "指针实现交换：\n\n1. 函数参数为int*，接收变量地址。\n\n2. 函数内用临时变量交换*a和*b。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nvoid swap(int* a, int* b) {\n    int temp = *a;\n    *a = *b;\n    *b = temp;\n}\n\nint main() {\n    int x=10, y=20;\n    cout << \"交换前：x=\" << x << \" y=\" << y << endl;\n    swap(&x, &y);\n    cout << \"交换后：x=\" << x << \" y=\" << y << endl;\n    return 0;\n}\n```\n\n传递地址实现修改实参，对比引用版本理解指针传参。"
+  },
+  {
+    "instruction": "编写C++程序，计算一个整数数组中所有元素的和，用指针操作遍历数组。",
+    "input": "",
+    "output": "指针遍历求和：\n\n1. int* p指向数组首地址。\n\n2. 循环n次，sum加*p，p++。\n\n3. 不用下标，纯指针操作。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int arr[] = {1,2,3,4,5};\n    int n = sizeof(arr)/sizeof(arr[0]);\n    int sum = 0;\n    int* p = arr;\n    for(int i=0;i<n;i++) {\n        sum += *p;\n        p++;\n    }\n    cout << \"和为：\" << sum << endl;\n    return 0;\n}\n```\n\n或者用指针比较p<arr+n，正确求和15。"
+  },
+  {
+    "instruction": "编写C++函数实现字符串比较strcmp功能，返回值规则同标准strcmp。",
+    "input": "",
+    "output": "实现strcmp：\n\n1. 逐字符比较，直到遇到不同字符或'\\0'。\n\n2. *s1-*s2返回差值，都到'\\0'返回0。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint myStrcmp(const char* s1, const char* s2) {\n    while(*s1 && *s2 && *s1 == *s2) {\n        s1++; s2++;\n    }\n    return *(unsigned char*)s1 - *(unsigned char*)s2;\n}\n\nint main() {\n    cout << myStrcmp(\"abc\",\"abc\") << endl;\n    cout << myStrcmp(\"abc\",\"abd\") << endl;\n    cout << myStrcmp(\"abd\",\"abc\") << endl;\n    return 0;\n}\n```\n\n相等返回0，小于返回负，大于返回正，转unsigned char处理负值字符。"
+  },
+  {
+    "instruction": "编写C++程序，输入年、月、日，判断这是这一年的第几天。",
+    "input": "",
+    "output": "判断第几天：\n\n1. 平年2月28天，闰年2月29天。\n\n2. 闰年判断：能被4整除但不能被100整除，或能被400整除。\n\n3. 累加前几个月天数，加当月日期。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int y,m,d;\n    cout << \"输入年 月 日：\";\n    cin >> y >> m >> d;\n    int months[] = {31,28,31,30,31,30,31,31,30,31,30,31};\n    bool leap = (y%4==0&&y%100!=0)||(y%400==0);\n    if(leap) months[1] = 29;\n    int day = d;\n    for(int i=0;i<m-1;i++) day += months[i];\n    cout << \"第\" << day << \"天\" << endl;\n    return 0;\n}\n```\n\n正确处理闰年，累加月份天数，结果正确。"
+  },
+  {
+    "instruction": "编写C++程序实现简单的选择菜单：1.加法 2.减法 3.乘法 4.除法 0.退出，根据用户选择计算两个数。",
+    "input": "",
+    "output": "菜单程序：\n\n1. do-while循环显示菜单，直到选0退出。\n\n2. switch处理选择，非0选项让用户输入两个数计算。\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    int choice;\n    do {\n        cout << \"\\n=====计算器=====\" << endl;\n        cout << \"1.加法\" << endl;\n        cout << \"2.减法\" << endl;\n        cout << \"3.乘法\" << endl;\n        cout << \"4.除法\" << endl;\n        cout << \"0.退出\" << endl;\n        cout << \"请选择：\";\n        cin >> choice;\n        if(choice==0) break;\n        double a,b;\n        cout << \"输入两个数：\";\n        cin >> a >> b;\n        switch(choice) {\n            case 1: cout << a+b << endl; break;\n            case 2: cout << a-b << endl; break;\n            case 3: cout << a*b << endl; break;\n            case 4: if(b!=0) cout << a/b << endl; else cout << \"除零错误\" << endl; break;\n            default: cout << \"无效选择\" << endl;\n        }\n    } while(choice != 0);\n    cout << \"程序结束\" << endl;\n    return 0;\n}\n```\n\n循环菜单，switch处理，除法判零，退出正常。"
+  },
+  {
+    "instruction": "编写C++程序，实现函数重载：写三个add函数，分别实现两个整数相加、两个浮点数相加、两个字符串拼接。",
+    "input": "",
+    "output": "函数重载：\n\n1. 同名函数参数列表不同（类型、个数不同）构成重载。\n\n2. 三个add：int加int，double加double，string加string。\n\n```cpp\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint add(int a, int b) { return a+b; }\ndouble add(double a, double b) { return a+b; }\nstring add(string a, string b) { return a+b; }\n\nint main() {\n    cout << add(1,2) << endl;\n    cout << add(1.5,2.5) << endl;\n    cout << add(\"Hello \", \"World\") << endl;\n    return 0;\n}\n```\n\n编译器根据实参类型自动调用对应函数，体现静态多态。"
+  }
+]
