@@ -13,6 +13,8 @@
 /output/
 *.safetensors
 *.bin
+*.pt
+*.pth
 
 # 压缩包
 *.tar.gz
