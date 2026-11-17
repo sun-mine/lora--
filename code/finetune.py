@@ -183,7 +183,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--smoke", action="store_true", help="只取少量样本、跑几步验证流程")
     parser.add_argument("--max_length", type=int, default=4096)
-    parser.add_argument("--epochs", type=float, default=2)
+    parser.add_argument("--epochs", type=float, default=5)
+    parser.add_argument("--resume", action="store_true", help="从 output 目录最新的 checkpoint 继续训练")
     args = parser.parse_args()
 
     tok = AutoTokenizer.from_pretrained(MODEL_DIR)
@@ -219,8 +220,8 @@ def main():
         warmup_steps=1 if args.smoke else 16,
         logging_steps=1 if args.smoke else 10,
         eval_strategy="no" if args.smoke else "steps",
-        eval_steps=500,
-        save_steps=500,
+        eval_steps=100,
+        save_steps=100,
         save_total_limit=2,
         bf16=True,
         gradient_checkpointing=True,
@@ -237,7 +238,16 @@ def main():
         peft_config=lora,
         processing_class=tok,
     )
-    trainer.train()
+    resume_from = None
+    if args.resume:
+        ckpts = glob.glob(os.path.join(OUT_DIR, "checkpoint-*"))
+        if ckpts:
+            resume_from = max(ckpts, key=lambda p: int(p.rsplit("-", 1)[1]))
+            print(f"从 {resume_from} 继续训练")
+        else:
+            print("没有找到 checkpoint，从头开始训练")
+
+    trainer.train(resume_from_checkpoint=resume_from)
     trainer.save_model(OUT_DIR)
     tok.save_pretrained(OUT_DIR)
     print(f"LoRA 权重已保存到 {OUT_DIR}")
