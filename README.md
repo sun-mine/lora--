@@ -1,20 +1,23 @@
-# Qwen2.5-3B LoRA 思考链微调
+# Qwen2.5-3B LoRA 思考链微调 + AWQ 量化
 
-用 LoRA SFT 让 Qwen2.5-3B 学会「先输出思考过程，再输出答案」。
+用 LoRA SFT 让 Qwen2.5-3B 学会「先输出思考过程，再输出答案」，再用 AWQ 把合并后的模型压到 4-bit。
 
 - 基座：Qwen2.5-3B（bf16）
 - 数据：6 个来源、3 个领域（C++ / HTML / 数学）的中文 CoT，共 2993 条，清洗后 2485 条
 - 训练：单卡 RTX 4090 24GB，2 epoch / 302 步 / 约 27 分钟
 - 结果：train_loss 0.804，hold-out eval_loss 0.809，token 准确率 79%
 - 产物：约 30M 可训练参数的 LoRA adapter（115MB）
+- 量化：AWQ W4A16（group_size 128），合并模型从 6.2GB 压到 2.08GB，加载仅占 2.06GB 显存
 
 ## 目录结构
 
 ```
 ├── code/
 │   ├── finetune.py        # 数据清洗 + LoRA 训练（单文件）
+│   ├── quant_awq.py       # LoRA 合并 + AWQ 4-bit 量化
 │   ├── chat.py            # 对话脚本
 │   └── chat01.py          # 基座模型最小示例
+├── AWQ_Qhua/              # 量化产物（本地生成，不入库）
 ├── database/              # 6 个来源的 CoT 数据
 │   ├── M3/                # JSONL：question / thinking / answer
 │   ├── deepseek/          # JSONL：question / cot / answer
@@ -33,9 +36,10 @@
 
 ```bash
 pip install torch transformers peft trl datasets accelerate
+pip install autoawq   # 量化需要
 ```
 
-已验证版本：torch 2.6.0+cu124、transformers 5.23.0、peft 0.21.3、trl 1.18.0。
+已验证版本：torch 2.6.0+cu124、transformers 5.23.0、peft 0.21.3、trl 1.18.0、autoawq 0.2.9。
 
 ## 准备模型
 
@@ -129,14 +133,70 @@ print(tok.decode(out[0][inputs.input_ids.shape[1]:], skip_special_tokens=True))
 
 输出会以 `思考：` 开头，`答案：` 之后是最终结果。
 
+## 量化（AWQ 4-bit）
+
+LoRA adapter 本身不能直接量化，脚本会先在显存里把 adapter 合并回基座，再对完整模型做 AWQ W4A16 量化，不产生 6GB 的中间文件。
+
+```bash
+# 默认：128 条校准样本、序列长度 512、4-bit
+python code/quant_awq.py
+
+# 显存紧张时减少校准量
+python code/quant_awq.py --calib_samples 64 --calib_seq_len 256
+
+# INT8
+python code/quant_awq.py --w_bit 8
+```
+
+| 项目 | 配置 |
+| --- | --- |
+| 量化方法 | AWQ（激活感知，需真实样本校准） |
+| 位宽 / 分组 | 4-bit / group_size 128 |
+| zero_point / kernel | true / GEMM |
+| 校准数据 | 128 条训练集 CoT 样本，seq_len 512 |
+| 量化范围 | 每层 q/k/v/o + gate/up/down 共 7 个线性层 |
+| 保持原精度 | `lm_head`、`embed_tokens` |
+
+体积与显存：
+
+| 形态 | 磁盘体积 | 加载显存 |
+| --- | --- | --- |
+| LoRA adapter（单独） | 115MB | 需配合 6.2GB 基座 |
+| 合并后 bf16 | 6.17GB | ≈ 6.2GB |
+| AWQ 4-bit | 2.08GB | 2.06GB |
+
+加载量化模型：
+
+```python
+from awq import AutoAWQForCausalLM
+
+model = AutoAWQForCausalLM.from_quantized("AWQ_Qhua", fuse_layers=False)
+```
+
+验证输出（量化后，贪心解码）：
+
+```
+思考：
+第一步，理清题意，求 3² + 4² 的值；第二步，计算并验证；第三步，得出结果。
+
+计算：3² = 9，4² = 16，9 + 16 = 25。验证：25 = 5²，结果正确。
+
+答案：
+25
+```
+
+量化后「思考 / 答案」结构保持完整，数值计算无退化。
+
 ## 查看成果展示
 
 直接用浏览器打开 `lora-showcase.html`，或在 GitHub 仓库 Settings → Pages 中选择 `main` / `/ (root)`，通过 Pages 地址访问。
-展示页包含指标、数据分布、loss 曲线和 4 组微调前后真实输出对比，字体与图表均已本地化，可离线打开。
+展示页包含指标、数据分布、loss 曲线、4 组微调前后真实输出对比，以及量化产物的体积与配置，字体与图表均已本地化，可离线打开。
 
 ## 说明与限制
 
 - 这次微调改变的是**输出格式与风格**，不代表模型推理能力有实质提升。
 - 约 3k 数据只能覆盖简单推理，复杂多步问题仍需要更多高质量数据或强化学习。
 - Qwen2.5 没有独立的思考通道，思考内容对用户可见。
+- AWQ 是校准式量化，效果依赖校准分布：这里用训练集同分布的 CoT 样本，换到别的任务上建议重新采样校准数据。
+- 用 transformers 原生 `from_pretrained` 加载 AWQ 模型需要额外的 `gptqmodel`；本仓库用 AutoAWQ 或 vLLM 加载。
 - 数据集遵循 Apache License 2.0，详见 `database/README.md`。

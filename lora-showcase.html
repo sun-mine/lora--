@@ -95,7 +95,7 @@
 
   /* ---------- Metrics ---------- */
   .metrics {
-    display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.85rem;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 0.85rem;
     margin: 2.5rem 0 4.5rem;
   }
   .metric {
@@ -213,7 +213,7 @@
   .case-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.65rem; }
 
   /* conclusion */
-  .concl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+  .concl { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.9rem; }
   .concl .card { padding: 1.15rem; }
   .concl h4 {
     font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase;
@@ -238,6 +238,22 @@
   pre.code .c { color: #8b93a7; }
   pre.code .k { color: #a5b4fc; }
   pre.code .s { color: #7dd3c7; }
+
+  /* bars */
+  .bars { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1.4rem; }
+  .bar-row {
+    display: grid; grid-template-columns: 6.5rem 1fr 4.5rem; align-items: center;
+    gap: 0.7rem; font-size: 0.8rem; color: var(--muted);
+  }
+  .bar-track {
+    height: 12px; border-radius: 999px; background: var(--bg);
+    border: 1px solid var(--rule); overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .bar-val { font-family: var(--font-mono); font-size: 0.76rem; text-align: right; color: var(--ink); }
 
   /* footer */
   footer {
@@ -275,7 +291,7 @@
     <h1>让 Qwen2.5-3B 学会<br><span class="grad">先思考，再回答</span></h1>
     <p class="lede">
       用 2485 条中文 Chain-of-Thought 数据做一次 LoRA SFT，把「思考过程」写进模型的输出分布。
-      单卡 RTX 4090，27 分钟完成训练，adapter 仅 115MB。
+      单卡 RTX 4090，27 分钟完成训练，adapter 仅 115MB；再用 AWQ 把合并模型压到 2.08GB。
     </p>
     <div class="meta-row">
       <span class="chip">基座 <b>Qwen2.5-3B</b></span>
@@ -283,6 +299,7 @@
       <span class="chip">硬件 <b>RTX 4090 24GB</b></span>
       <span class="chip">耗时 <b>27 min</b></span>
       <span class="chip">方法 <b>LoRA SFT</b></span>
+      <span class="chip">量化 <b>AWQ 4-bit</b></span>
     </div>
   </header>
 
@@ -293,6 +310,7 @@
     <div class="metric"><div class="num">302</div><div class="label">训练步数（2 epoch）</div></div>
     <div class="metric"><div class="num">30<small>M</small></div><div class="label">可训练参数（0.97%）</div></div>
     <div class="metric"><div class="num">115<small>MB</small></div><div class="label">LoRA adapter 体积</div></div>
+    <div class="metric" style="border-color:rgba(79,70,229,0.28)"><div class="num">2.08<small>GB</small></div><div class="label">AWQ 4-bit 体积（-67%）</div></div>
   </div>
 
   <section>
@@ -657,6 +675,65 @@ body {
   <section>
     <div class="sec-head">
       <div class="sec-num">05</div>
+      <h2>量化部署</h2>
+      <div class="sub">LoRA 合并后做 AWQ W4A16，体积压到约三分之一</div>
+    </div>
+    <div class="two-col">
+      <div class="card" style="padding:1.35rem">
+        <div class="prose">
+          <p>
+            LoRA adapter 只是一组旁路矩阵，不能单独量化。脚本先在显存里把 adapter
+            合并回基座，得到 <strong>6.17GB 的完整 bf16 模型</strong>，再用 128 条训练集
+            CoT 样本做激活校准，按组量化到 4-bit，不产生 6GB 的中间文件。
+          </p>
+          <p>
+            只量化每层 7 个线性层，<code>lm_head</code> 与 <code>embed_tokens</code>
+            保留原精度。产物 <code>AWQ_Qhua/</code> 为 2.08GB，加载占 2.06GB 显存。
+          </p>
+        </div>
+        <div class="bars">
+          <div class="bar-row"><span class="bar-name">合并 bf16</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-val">6.17 GB</span></div>
+          <div class="bar-row"><span class="bar-name">AWQ 4-bit</span><div class="bar-track"><div class="bar-fill" style="width:33.7%"></div></div><span class="bar-val">2.08 GB</span></div>
+          <div class="bar-row"><span class="bar-name">LoRA adapter</span><div class="bar-track"><div class="bar-fill" style="width:1.9%"></div></div><span class="bar-val">115 MB</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>项目</th><th>配置</th></tr></thead>
+            <tbody>
+              <tr><td class="k">量化方法</td><td class="v">AWQ W4A16</td></tr>
+              <tr><td class="k">位宽 / 分组</td><td class="v">4-bit / group_size 128</td></tr>
+              <tr><td class="k">zero_point</td><td class="v">true</td></tr>
+              <tr><td class="k">kernel</td><td class="v">GEMM</td></tr>
+              <tr><td class="k">校准数据</td><td class="v">128 条 CoT · seq_len 512</td></tr>
+              <tr><td class="k">量化层</td><td class="v">q/k/v/o + gate/up/down</td></tr>
+              <tr><td class="k">保持精度</td><td class="v">lm_head / embed_tokens</td></tr>
+              <tr><td class="k">磁盘体积</td><td class="v">2.08 GB</td></tr>
+              <tr><td class="k">加载显存</td><td class="v">2.06 GB</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card case" style="margin-top:1.5rem">
+      <div class="case-head"><span class="badge">验证</span><h3>量化后输出（贪心解码）</h3></div>
+      <div class="case-q">3 的平方加 4 的平方等于多少？</div>
+      <div class="out">思考：
+第一步，理清题意，求 3² + 4² 的值；第二步，计算并验证；第三步，得出结果。
+
+计算：3² = 9，4² = 16，9 + 16 = 25。验证：25 = 5²，结果正确。
+
+答案：
+25</div>
+      <div class="case-note">4-bit 量化后「思考 / 答案」分区与数值计算均与 bf16 一致。</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div class="sec-num">06</div>
       <h2>结论</h2>
       <div class="sub">3k 数据量下 LoRA SFT 能改变什么、不能改变什么</div>
     </div>
@@ -678,6 +755,14 @@ body {
         </ul>
       </div>
       <div class="card">
+        <h4>量化收益</h4>
+        <ul>
+          <li>体积 6.17GB → 2.08GB，省 67% 磁盘</li>
+          <li>加载显存 2.06GB，24GB 卡上可并行走多实例</li>
+          <li>CoT 格式与简单数值推理无明显退化</li>
+        </ul>
+      </div>
+      <div class="card">
         <h4>局限</h4>
         <ul>
           <li>本质是风格模仿，不代表推理能力真实提升</li>
@@ -690,9 +775,9 @@ body {
 
   <section>
     <div class="sec-head">
-      <div class="sec-num">06</div>
+      <div class="sec-num">07</div>
       <h2>复现</h2>
-      <div class="sub">单文件完成数据清洗与训练</div>
+      <div class="sub">单文件完成数据清洗与训练，一条命令完成量化</div>
     </div>
     <pre class="code"><span class="c"># 全量训练（约 27 分钟）</span>
 /home/shipl/llm/bin/python code/finetune.py
@@ -700,14 +785,17 @@ body {
 <span class="c"># 冒烟测试（200 条样本，5 步）</span>
 /home/shipl/llm/bin/python code/finetune.py --smoke
 
-<span class="c"># 加载 adapter</span>
-<span class="k">from</span> peft <span class="k">import</span> PeftModel
-model = PeftModel.from_pretrained(base_model, <span class="s">"output/lora-qwen2.5-cot"</span>)</pre>
+<span class="c"># LoRA 合并 + AWQ 4-bit 量化 → AWQ_Qhua/</span>
+/home/shipl/llm/bin/python code/quant_awq.py
+
+<span class="c"># 加载量化模型</span>
+<span class="k">from</span> awq <span class="k">import</span> AutoAWQForCausalLM
+model = AutoAWQForCausalLM.from_quantized(<span class="s">"AWQ_Qhua"</span>, fuse_layers=<span class="k">False</span>)</pre>
   </section>
 
   <footer>
-    <div>Qwen2.5-3B · LoRA r=16 · 2485 条 CoT · RTX 4090</div>
-    <div>产物：<code>output/lora-qwen2.5-cot</code> · 2026-11-16</div>
+    <div>Qwen2.5-3B · LoRA r=16 · AWQ 4-bit · RTX 4090</div>
+    <div>产物：<code>output/lora-qwen2.5-cot</code> · <code>AWQ_Qhua</code> · 2026-11-20</div>
   </footer>
 </article>
 

@@ -11,6 +11,7 @@
 # 模型权重与训练产物
 /model/
 /output/
+/AWQ_Qhua/
 *.safetensors
 *.bin
 *.pt
